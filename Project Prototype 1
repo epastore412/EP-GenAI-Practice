@@ -1,0 +1,54 @@
+# Evidence Sorter
+
+Evidence Sorter turns one customer-discovery interview transcript into draft, quote-backed evidence rows linked to assumptions for a person to review.
+
+## What this prototype does
+
+- Accepts a speaker-labeled transcript and assumptions in `ID: statement` format.
+- Guesses the interviewee label, lets you change it, and analyzes only that speaker's turns.
+- Finds sentence-sized candidate quotes with keyword rules; shows source line, assumption, signal, factual observation, and a labeled draft interpretation.
+- Checks every quote against the transcript, and rechecks edits. Unverified rows cannot be accepted or exported.
+- Lets you accept, edit, or reject rows; downloads accepted, verified rows as CSV.
+- Lists assumptions that have no non-rejected evidence row.
+- Includes three fictional samples: a relevant single-use technology interview, a noisy interview with `Speaker A` as the interviewee, and an adjacent-market interview.
+
+## How to open it
+
+Open `evidence-sorter.html` in a modern browser. It is one self-contained HTML file; it needs no install, server, account, or network connection. No hosted Replit link was verified for this standalone file.
+
+## What works now vs. what is simulated
+
+**Works now:** input validation; speaker-label selection and a best guess; fictional sample loading; exact-substring verification with runs of spaces normalized; live verification while editing; acceptance and rejection controls; CSV export restricted to accepted, verified rows; and a “Still needs evidence” panel. Transcript and assumption text live only in page memory and clear on refresh.
+
+**Simulated:** the displayed “Simulated analysis — keyword rules, not AI” is literal. Candidate matching uses word overlap plus topic anchors, and signal labels use simple negation and positive-cue rules. Observations and interpretations are deterministic text templates, not model-generated analysis.
+
+**Future AI:** a later AI-assisted pass could suggest relevant sentences and draft signals or interpretations, while retaining deterministic quote verification and human acceptance.
+
+## Test results
+
+Tests were run against the actual page in headless Chromium. “Pass” means the described behavior was observed in that run.
+
+| Test | Action and observed result | Outcome |
+|---|---|---|
+| App startup | Opened the standalone page in Chromium; the page title was “Evidence Sorter” and its inline JavaScript parsed. | Pass |
+| Typical interview | Loaded sample 1 and analyzed it; got 3 rows covering P1, P2, and P3, and all 3 were verified. | Pass |
+| Messy interview | Loaded sample 2; `Speaker A` was preselected. Got 2 verified rows from lines 3 and 5; voicemail and interviewer lines did not appear. | Pass |
+| Empty transcript | Analyzed with the transcript cleared; got a clear transcript message and no results table. | Pass |
+| Empty assumptions | Analyzed with assumptions cleared; got a clear assumptions message and no results table. | Pass |
+| Adjacent market | Loaded sample 3; got 0 candidate rows and all 3 assumptions remained under “Still needs evidence.” | Pass |
+| Edited quote | Replaced a quote with text absent from the transcript; the badge changed to Unverified, and accept and download were disabled. | Pass |
+| CSV export | Accepted a verified row; captured `accepted-evidence.csv` with one verified data row, in addition to the header. | Pass |
+| Rejection behavior | Rejected the only P1 candidate in sample 1; P1 returned to “Still needs evidence.” | Pass |
+| Refresh privacy | Reloaded after entering sample data; transcript, assumptions, and results were empty. | Pass |
+
+## Limitations and next improvements
+
+1. Keyword rules miss paraphrases and can confuse words with similar surface forms. Next: broaden candidate retrieval with a reviewed synonym list, while keeping exact quote checks deterministic.
+2. Sentence splitting is punctuation-based and expects one speaker-labeled turn per line. Next: support common transcript exports such as timestamped or diarized formats.
+3. Signal cues do not fully understand negation scope or surrounding context; draft interpretations are templates. Next: add contextual, human-reviewed suggestions without treating them as verified findings.
+
+## Privacy and links
+
+Nothing is sent to a server or saved in browser storage. Text exists only in the current page and is cleared when the page refreshes or closes. The delivered HTML contains no API keys or credentials.
+
+No public GitHub URL was verified for this standalone deliverable.
